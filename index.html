@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Section with Video Background and Typewriter Effect</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Overlay for better text readability */
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            margin-top: 60vh;
+        }
+        #typewriter {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(1.5em, 5vw, 3em);
+            color: #00ff00;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid #00ff00;
+            animation: blink 1s infinite;
+            max-width: 90vw;
+            word-wrap: break-word;
+        }
+        @keyframes blink {
+            0%, 50% { border-color: #00ff00; }
+            51%, 100% { border-color: transparent; }
+        }
+        p {
+            font-size: 1.5em;
+        }
+        .buttons {
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .buttons.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .buttons button {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: #ddd;
+        }
+        .shop-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            z-index: 3;
+        }
+        .shop-button:hover {
+            background-color: #ddd;
+        }
+        .jaxx-button {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            z-index: 3;
+        }
+        .jaxx-button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <video autoplay muted id="hero-video">
+            <source src="http://localhost:10023/wp-content/uploads/2025/11/From-KlickPin-CF-Pin-on-Beautiful-eyes-images.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <button class="shop-button" onclick="window.location.href='shop.html'">Shop</button>
+        <button class="jaxx-button">Jaxx</button>
+        <div class="hero-content">
+            <div id="typewriter"></div>
+            <p>Bringing Dreams To Life</p>
+            <div class="buttons" id="buttons">
+                <button>Get Started</button>
+                <button>Learn More</button>
+            </div>
+        </div>
+    </section>
+    <script>
+        const video = document.getElementById('hero-video');
+        const buttons = document.getElementById('buttons');
+        const typewriter = document.getElementById('typewriter');
+        const staticText = "Welcome to ";
+        const words = ["24/7 Dev", "Innovation", "the Future"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let isStaticTyped = false;
+
+        function typeWriter() {
+            const currentWord = words[wordIndex];
+            const fullText = staticText + currentWord;
+
+            if (!isStaticTyped) {
+                // Type the static text first
+                if (charIndex < staticText.length) {
+                    typewriter.innerHTML = staticText.substring(0, charIndex + 1);
+                    charIndex++;
+                    setTimeout(typeWriter, 100);
+                } else {
+                    isStaticTyped = true;
+                    charIndex = 0;
+                    setTimeout(typeWriter, 500); // Pause before typing first word
+                }
+            } else {
+                // Type or delete the dynamic word
+                if (!isDeleting) {
+                    if (charIndex < currentWord.length) {
+                        typewriter.innerHTML = staticText + currentWord.substring(0, charIndex + 1);
+                        charIndex++;
+                        setTimeout(typeWriter, 100);
+                    } else {
+                        isDeleting = true;
+                        setTimeout(typeWriter, 2000); // Pause before deleting
+                    }
+                } else {
+                    if (charIndex > 0) {
+                        typewriter.innerHTML = staticText + currentWord.substring(0, charIndex - 1);
+                        charIndex--;
+                        setTimeout(typeWriter, 50);
+                    } else {
+                        isDeleting = false;
+                        wordIndex = (wordIndex + 1) % words.length;
+                        setTimeout(typeWriter, 500); // Pause before typing next word
+                    }
+                }
+            }
+        }
+
+        // Start typewriter when video starts
+        video.addEventListener('play', function() {
+            typeWriter();
+        });
+
+        video.addEventListener('timeupdate', function() {
+            if (video.currentTime >= video.duration / 2) {
+                buttons.classList.add('animate');
+            }
+        });
+        video.addEventListener('ended', function() {
+            video.pause();
+        });
+    </script>
+</body>
+</html>
